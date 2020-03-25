@@ -63,7 +63,7 @@ done
 CURRENT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd $CURRENT_DIR
 
-fish_bin=$CURRENT_DIR/fish-portable/fish.sh
+fish_bin=$CURRENT_DIR/fish-portable/bin/fish.sh
 # Check
 if [[ ! -f .entrypoint-check-done ]]; then
   check_result=`$fish_bin --version 2>&1`
