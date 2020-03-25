@@ -1,4 +1,4 @@
-Experimental [xxh](https://github.com/xxh/xxh) entrypoint for [fish-portable](https://github.com/xxh/fish-portable) - statically-linked fish.
+[xxh](https://github.com/xxh/xxh) entrypoint for [fish-portable](https://github.com/xxh/fish-portable) - statically-linked fish.
 ## Install
 Install from xxh repo:
 ```
