@@ -6,9 +6,10 @@ xxh +I xxh-shell-fish
 ```
 Install from any repo:
 ```
-cd ~/.xxh/xxh/shells/
-git clone https://github.com/xxh/xxh-shell-fish
-./xxh-shell-fish/build.sh
+xxh +I xxh-shell-fish+git+https://github.com/xxh/xxh-shell-fish
+```
+Connect:
+```
 xxh myhost +s xxh-shell-fish
 ```
 To avoid adding `+s` every time use xxh config in `~/.xxh/.xxhc`:
