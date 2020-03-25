@@ -75,5 +75,5 @@ if [[ ! -f .entrypoint-check-done ]]; then
   fi
 fi
 
-export XXH_HOME=`realpath $CURRENT_DIR/../../../..`
+export XXH_HOME=`dirname $CURRENT_DIR/../../../../p`
 $fish_bin "${EXECUTE_COMMAND[@]}"  # $EXECUTE_FILE
