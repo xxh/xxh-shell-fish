@@ -63,7 +63,7 @@ done
 CURRENT_DIR="$(cd "$(dirname "$0")" && pwd)"
 cd $CURRENT_DIR
 
-fish_bin=./fish-portable/fish.sh
+fish_bin=$CURRENT_DIR/fish-portable/fish.sh
 # Check
 if [[ ! -f .entrypoint-check-done ]]; then
   check_result=`$fish_bin --version 2>&1`
@@ -76,4 +76,5 @@ if [[ ! -f .entrypoint-check-done ]]; then
 fi
 
 export XXH_HOME=`dirname $CURRENT_DIR/../../../../p`
+cd ~
 $fish_bin "${EXECUTE_COMMAND[@]}"  # $EXECUTE_FILE
