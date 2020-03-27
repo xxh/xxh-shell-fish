@@ -76,6 +76,10 @@ if [[ ! -f .entrypoint-check-done ]]; then
 fi
 
 export XXH_HOME=`dirname $CURRENT_DIR/../../../../p`
+# Set the Fish Shell configuration directory, so it is inside
+# the .xxh directory located at ~/.xxh/.config/fish
+# Normally the Fish Shell configuration directory is ~/.config/fish
+export XDG_CONFIG_HOME="$XXH_HOME/.config"
 export PATH=$CURRENT_DIR/fish-portable/bin:$PATH
 
 cd ~
