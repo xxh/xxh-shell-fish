@@ -77,6 +77,6 @@ fi
 
 export XXH_HOME=`dirname $CURRENT_DIR/../../../../p`
 export PATH=$CURRENT_DIR/fish-portable/bin:$PATH
-
+export XDG_CONFIG_HOME=$XXH_HOME/.config
 cd ~
 $fish_bin "${EXECUTE_COMMAND[@]}"  # $EXECUTE_FILE
