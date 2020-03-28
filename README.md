@@ -10,13 +10,13 @@ xxh +I xxh-shell-fish+git+https://github.com/xxh/xxh-shell-fish
 ```
 Connect:
 ```
-xxh myhost +s xxh-shell-fish
+xxh myhost +s fish
 ```
 To avoid adding `+s` every time use xxh config in `~/.config/xxh/config.xxhc` (`$XDG_CONFIG_HOME`):
 ```
 hosts:
   ".*":                     # Regex for all hosts
-    +s: xxh-shell-fish
+    +s: fish
 ```
 
 ## Plugins
