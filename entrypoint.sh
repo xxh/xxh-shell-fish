@@ -75,7 +75,7 @@ if [[ ! -f .entrypoint-check-done ]]; then
   fi
 fi
 
-export XXH_HOME=`dirname $CURRENT_DIR/../../../../p`
+export XXH_HOME=`readlink -f $CURRENT_DIR/../../../..`
 export PATH=$CURRENT_DIR/fish-portable/bin:$PATH
 export XDG_CONFIG_HOME=$XXH_HOME/.config
 cd ~
