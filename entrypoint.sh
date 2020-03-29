@@ -94,4 +94,5 @@ else
 fi
 
 cd ~
+$fish_bin $XXH_HOME/.xxh/shells/xxh-shell-fish/build/xxh-config.fish
 $fish_bin "${EXECUTE_COMMAND[@]}"  # $EXECUTE_FILE
