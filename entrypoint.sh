@@ -78,7 +78,6 @@ fi
 
 export XXH_HOME=`readlink -f $CURRENT_DIR/../../../..`
 export PATH=$CURRENT_DIR/fish-portable/bin:$PATH
-export XDG_CONFIG_HOME=$XXH_HOME/.config
 
 if [[ $HOMEPATH != '' ]]; then
   homerealpath=`readlink -f $HOMEPATH`
@@ -92,6 +91,9 @@ if [[ $HOMEPATH != '' ]]; then
 else
   export HOME=$XXH_HOME
 fi
+
+export XDG_CONFIG_HOME=$HOME/.config
+export XDG_DATA_HOME=$HOME/.local/share
 
 cd ~
 $fish_bin --interactive --init-command="source $XXH_HOME/.xxh/shells/xxh-shell-fish/build/xxh-config.fish" "${EXECUTE_COMMAND[@]}"  $EXECUTE_FILE
