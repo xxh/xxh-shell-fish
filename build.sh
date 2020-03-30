@@ -14,7 +14,7 @@ done
 rm -rf $build_dir
 mkdir -p $build_dir
 
-for f in entrypoint.sh
+for f in entrypoint.sh xxh-config.fish
 do
     cp $CDIR/$f $build_dir/
 done

@@ -94,4 +94,4 @@ else
 fi
 
 cd ~
-$fish_bin "${EXECUTE_COMMAND[@]}"  # $EXECUTE_FILE
+$fish_bin --interactive --init-command="source $XXH_HOME/.xxh/shells/xxh-shell-fish/build/xxh-config.fish" "${EXECUTE_COMMAND[@]}"  # $EXECUTE_FILE
