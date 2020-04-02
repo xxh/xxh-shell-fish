@@ -3,7 +3,7 @@
 
 set CURRENT_DIR (dirname (realpath (status current-filename)))
 
-for pluginrc_file in $CURRENT_DIR/../../../plugins/*-fish-*/build/pluginrc.fish
+for pluginrc_file in (find $CURRENT_DIR/../../../plugins/*-fish-*/build -type f -name '*pluginrc.fish' -printf '%f\t%p\n' 2>/dev/null | sort -k1 | cut -f2)
   if  test  -f $pluginrc_file 
     set plugin_name (basename (dirname (dirname $pluginrc_file)))
 
