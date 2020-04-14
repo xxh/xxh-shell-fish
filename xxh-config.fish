@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 # xxh Fish Shell configuration file that loads xxh plugins.
-
+set -U fish_greeting ""
 set CURRENT_DIR (dirname (realpath (status current-filename)))
 
 set -l dirs $CURRENT_DIR/../../../plugins/*-fish-*/build
