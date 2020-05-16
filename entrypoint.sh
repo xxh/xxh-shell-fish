@@ -89,11 +89,11 @@ if [[ ! -f .entrypoint-check-done ]]; then
   fi
 fi
 
-export XXH_HOME=`readlink -f $CURRENT_DIR/../../../..`
+export XXH_HOME=$CURRENT_DIR/../../../..
 export PATH=$CURRENT_DIR/fish-portable/bin:$PATH
 
 if [[ $HOMEPATH != '' ]]; then
-  homerealpath=`readlink -f $HOMEPATH`
+  homerealpath=$HOMEPATH
   if [[ -d $homerealpath ]]; then
     export HOME=$homerealpath
   else
@@ -106,7 +106,7 @@ else
 fi
 
 if [[ $XDGPATH != '' ]]; then
-  xdgrealpath=`readlink -f $XDGPATH`
+  xdgrealpath=$XDGPATH
   if [[ ! -d $xdgrealpath ]]; then
     echo "XDG path not found: $xdgrealpath"
     echo "Set XDG path to $XXH_HOME"
