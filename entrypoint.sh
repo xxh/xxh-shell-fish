@@ -91,6 +91,7 @@ fi
 
 export XXH_HOME=$CURRENT_DIR/../../../..
 export PATH=$CURRENT_DIR/fish-portable/bin:$PATH
+export USER_HOME=$HOME
 
 if [[ $HOMEPATH != '' ]]; then
   homerealpath=$HOMEPATH
@@ -119,7 +120,12 @@ fi
 export XDG_CONFIG_HOME=$XDGPATH/.config
 export XDG_DATA_HOME=$XDGPATH/.local/share
 export XDG_CACHE_HOME=$XDGPATH/.cache
-export XAUTHORITY=$( getent passwd | grep -m 1 -E "^$USER\:.*" | cut -d\: -f 6 )/.Xauthority
+
+if [ -x "$(command -v getent)" ]; then
+  export XAUTHORITY=$( getent passwd | grep -m 1 -E "^$USER\:.*" | cut -d\: -f 6 )/.Xauthority
+else
+  export XAUTHORITY=$USER_HOME/.Xauthority
+fi
 
 for pluginrc_file in $(find $CURRENT_DIR/../../../plugins/xxh-plugin-*/build -type f -name '*prerun.sh' -printf '%f\t%p\n' 2>/dev/null | sort -k1 | cut -f2); do
   if [[ -f $pluginrc_file ]]; then
