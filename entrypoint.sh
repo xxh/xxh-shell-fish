@@ -54,6 +54,10 @@ if [[ $EXECUTE_FILE ]]; then
 fi
 
 for env in "${ENV[@]}"; do
+  # If the env does not look like name=val, let's skip it
+  if [[ $env != *"="* ]]; then
+    continue
+  fi
   name="$( cut -d '=' -f 1 <<< "$env" )";
   val="$( cut -d '=' -f 2- <<< "$env" )";
   val=`echo $val | base64 -d`
