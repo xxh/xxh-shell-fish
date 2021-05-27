@@ -121,6 +121,7 @@ else
   export XDGPATH=$XXH_HOME
 fi
 
+export XXH_SHELL=fish
 export XDG_CONFIG_HOME=$XDGPATH/.config
 export XDG_DATA_HOME=$XDGPATH/.local/share
 export XDG_CACHE_HOME=$XDGPATH/.cache
