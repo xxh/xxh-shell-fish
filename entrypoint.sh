@@ -14,86 +14,98 @@
 
 while getopts f:c:C:v:e:b:H:X: option
 do
-case "${option}"
-in
-f) EXECUTE_FILE=${OPTARG};;
-c) EXECUTE_COMMAND=${OPTARG};;
-C) EXECUTE_COMMAND_B64=${OPTARG};;
-v) VERBOSE=${OPTARG};;
-e) ENV+=("$OPTARG");;
-b) EBASH+=("$OPTARG");;
-H) HOMEPATH=${OPTARG};;
-X) XDGPATH=${OPTARG};;
-esac
+  case "${option}"
+  in
+    f) EXECUTE_FILE=${OPTARG};;
+    c) EXECUTE_COMMAND=${OPTARG};;
+    C) EXECUTE_COMMAND_B64=${OPTARG};;
+    v) VERBOSE=${OPTARG};;
+    e) ENV+=("$OPTARG");;
+    b) EBASH+=("$OPTARG");;
+    H) HOMEPATH=${OPTARG};;
+    X) XDGPATH=${OPTARG};;
+    *) echo "Unknown option: ${option}";;
+  esac
 done
 
+# Set Verbosity Level based on xxh +v option
 if [[ $VERBOSE != '' ]]; then
   export XXH_VERBOSE=$VERBOSE
 fi
 
+# Handle -c and -C options for commands
+# EXECUTE_COMMAND_ARRAY is required due to different types (string/array)
 if [[ $EXECUTE_COMMAND ]]; then
   if [[ $XXH_VERBOSE == '1' || $XXH_VERBOSE == '2' ]]; then
-    echo Execute command: $EXECUTE_COMMAND
+    echo "Execute command: $EXECUTE_COMMAND"
   fi
 
-  EXECUTE_COMMAND=(-c "${EXECUTE_COMMAND}")
+  EXECUTE_COMMAND_ARRAY=(-c "${EXECUTE_COMMAND}")
 fi
 
 if [[ $EXECUTE_COMMAND_B64 ]]; then
-  EXECUTE_COMMAND=`echo $EXECUTE_COMMAND_B64 | base64 -d`
+  EXECUTE_COMMAND=$(echo "$EXECUTE_COMMAND_B64" | base64 -d)
   if [[ $XXH_VERBOSE == '1' || $XXH_VERBOSE == '2' ]]; then
-    echo Execute command base64: $EXECUTE_COMMAND_B64
-    echo Execute command: $EXECUTE_COMMAND
+    echo "Execute command base64: $EXECUTE_COMMAND_B64"
+    echo "Execute command: $EXECUTE_COMMAND"
   fi
 
-  EXECUTE_COMMAND=(-c "${EXECUTE_COMMAND}")
+  EXECUTE_COMMAND_ARRAY=(-c "${EXECUTE_COMMAND}")
 fi
 
+# If a filename is provided, clear the previous set command
 if [[ $EXECUTE_FILE ]]; then
-  EXECUTE_COMMAND=""
+  unset EXECUTE_COMMAND_ARRAY
 fi
 
+# Handle -e options for environement variables
 for env in "${ENV[@]}"; do
   # If the env does not look like name=val, let's skip it
   if [[ $env != *"="* ]]; then
     continue
   fi
+
   name="$( cut -d '=' -f 1 <<< "$env" )";
   val="$( cut -d '=' -f 2- <<< "$env" )";
-  val=`echo $val | base64 -d`
+  val=$(echo "$val" | base64 -d)
 
   if [[ $XXH_VERBOSE == '1' || $XXH_VERBOSE == '2' ]]; then
-    echo Entrypoint env: raw="$env", name=$name, value=$val
+    echo "Entrypoint env: raw=$env, name=$name, value=$val"
   fi
 
-  export $name="$val"
+  export "$name"="$val"
 done
 
+# Handle -b options for bash commands
 for eb in "${EBASH[@]}"; do
-  bash_command=`echo $eb | base64 -d`
+  bash_command=$(echo "$eb" | base64 -d)
 
   if [[ $XXH_VERBOSE == '1' || $XXH_VERBOSE == '2' ]]; then
-    echo Entrypoint bash execute: $bash_command
+    echo "Entrypoint bash execute: $bash_command"
   fi
-  eval $bash_command
+  eval "$bash_command"
 done
 
+# Where are we?
 CURRENT_DIR="$(cd "$(dirname "$0")" && pwd)"
-cd $CURRENT_DIR
+cd "$CURRENT_DIR" || exit
 
 fish_bin=$CURRENT_DIR/fish-portable/bin/fish.sh
+
 # Check
 if [[ ! -f .entrypoint-check-done ]]; then
-  check_result=`$fish_bin --version 2>&1`
+  check_result=$($fish_bin --version 2>&1)
   if [[ $check_result != *"fish"* ]]; then
     echo "Something went wrong while running fish on host:"
-    echo $check_result
+    echo "$check_result"
   else
-    echo $check_result > .entrypoint-check-done
+    echo "$check_result" > .entrypoint-check-done
   fi
 fi
 
-export XXH_HOME=$CURRENT_DIR/../../../..
+XXH_HOME=$(readlink -f "$CURRENT_DIR"/../../../..)
+export XXH_HOME
+
 export PATH=$CURRENT_DIR/fish-portable/bin:$PATH
 export USER_HOME=$HOME
 
@@ -111,7 +123,7 @@ else
 fi
 
 if [[ $XDGPATH != '' ]]; then
-  xdgrealpath=$XDGPATH
+  xdgrealpath=$(readlink -f "$XDGPATH")
   if [[ ! -d $xdgrealpath ]]; then
     echo "XDG path not found: $xdgrealpath"
     echo "Set XDG path to $XXH_HOME"
@@ -127,20 +139,21 @@ export XDG_DATA_HOME=$XDGPATH/.local/share
 export XDG_CACHE_HOME=$XDGPATH/.cache
 
 if [ -x "$(command -v getent)" ]; then
-  export XAUTHORITY=$( getent passwd | grep -m 1 -E "^$USER\:.*" | cut -d\: -f 6 )/.Xauthority
+  XAUTHORITY=$( getent passwd | grep -m 1 -E "^$USER\:.*" | cut -d ":" -f 6 )/.Xauthority
+  export XAUTHORITY
 else
   export XAUTHORITY=$USER_HOME/.Xauthority
 fi
 
-for pluginrc_file in $(find $CURRENT_DIR/../../../plugins/xxh-plugin-*/build -type f -name '*prerun.sh' -printf '%f\t%p\n' 2>/dev/null | sort -k1 | cut -f2); do
+for pluginrc_file in $(find "$CURRENT_DIR"/../../../plugins/xxh-plugin-*/build -type f -name '*prerun.sh' -printf '%f\t%p\n' 2>/dev/null | sort -k1 | cut -f2); do
   if [[ -f $pluginrc_file ]]; then
     if [[ $XXH_VERBOSE == '1' || $XXH_VERBOSE == '2' ]]; then
-      echo Load plugin $pluginrc_file
+      echo "Load plugin $pluginrc_file"
     fi
     #cd $(dirname $pluginrc_file)
-    source $pluginrc_file
+    source "$pluginrc_file"
   fi
 done
 
-cd $HOME
-$fish_bin --interactive --init-command="source $XXH_HOME/.xxh/shells/xxh-shell-fish/build/xxh-config.fish" "${EXECUTE_COMMAND[@]}"  $EXECUTE_FILE
+cd "$HOME" || exit
+$fish_bin --interactive --init-command="source $XXH_HOME/.xxh/shells/xxh-shell-fish/build/xxh-config.fish" "${EXECUTE_COMMAND_ARRAY[@]}" $EXECUTE_FILE
