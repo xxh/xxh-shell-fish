@@ -142,7 +142,7 @@ export TEMP=$TMPDIR
 mkdir -p $TMPDIR
 
 if [ -x "$(command -v getent)" ]; then
-  XAUTHORITY=$( getent passwd | grep -m 1 -E "^$USER\:.*" | cut -d ":" -f 6 )/.Xauthority
+  XAUTHORITY=$( getent passwd 2>/dev/null | grep -m 1 -E "^$USER\:.*" | cut -d ":" -f 6 )/.Xauthority
   export XAUTHORITY
 else
   export XAUTHORITY=$USER_HOME/.Xauthority
